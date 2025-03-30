@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config()
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
@@ -6,12 +7,21 @@ const cors = require("cors"); // Importer le middleware cors
 
 const app = express();
 const PORT = 3000;
-
+console.log(process.env.CLIENT_URL)
 // Utiliser le middleware cors
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL, 
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // Middleware pour parser le JSON
 app.use(bodyParser.json());
+
+
 
 // Charger les intents
 const loadIntents = () => {
@@ -82,7 +92,11 @@ app.post("/chat", (req, res) => {
   res.json({ response });
 });
 
+app.get("/", (req,res) => {
+  res.send("Yoooo")
+})
+
 // Démarrer le serveur
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
+  console.log(`Serveur démarré sur le port http://localhost:${PORT}`);
 });
